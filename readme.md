@@ -1,0 +1,1 @@
+Set of exercises done to teach myself TF in python
