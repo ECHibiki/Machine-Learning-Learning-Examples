@@ -1,5 +1,10 @@
-.idea/
 *.tar.gz
+*.pickle
+*.ipynb
+
+.idea/
+__pycache__/
 notMNIST_large/
 notMNIST_small/
 venv/
+.ipynb_checkpoints/
