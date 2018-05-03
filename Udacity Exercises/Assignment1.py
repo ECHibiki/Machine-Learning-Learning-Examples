@@ -236,7 +236,7 @@ def merge_datasets(pickle_files, train_size, valid_size=0):
 
 train_size = 200000
 valid_size = 10000
-test_size = 10000
+test_size = 18724
 
 
 
