@@ -1,6 +1,7 @@
 *.tar.gz
 *.pickle
 *.ipynb
+*.zip
 
 .idea/
 __pycache__/
