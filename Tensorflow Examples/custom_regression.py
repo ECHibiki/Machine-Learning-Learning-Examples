@@ -12,6 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+'''
+    Steps of doing custom regression with a Deep Neural Network
+    1) Get datasets
+    2) Scale datasets
+    3) Give data weights based on category as one-hot or embedding
+    4) Make a custom model with hyperparameters
+        - Feature collumn layers
+        - Add relu function for every hidden unit collumn
+        - Add the output layer shaped to 1D
+    5) Train and evaluate
+'''
+
 """Regression using the DNNRegressor Estimator."""
 
 from __future__ import absolute_import

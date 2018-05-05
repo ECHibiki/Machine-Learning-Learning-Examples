@@ -12,6 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+
+'''
+The steps for basic a supervised learning proccess
+
+    1) Get your dataset loaded into memory
+    2) Scale your datasets as needed
+    3) Define your features
+    4) Apply a tf.estimator. model function
+    5) Train the model with the datasets repeating until all itterations complete
+        -Use SGD batching and shuffle regularl.
+    6) Create an evaluation with test data to see average loss against model
+        -Might use MSE amoung other ideas
+    7) Use model for prediction testing
+'''
+
+
 """Linear regression using the LinearRegressor Estimator."""
 
 from __future__ import absolute_import

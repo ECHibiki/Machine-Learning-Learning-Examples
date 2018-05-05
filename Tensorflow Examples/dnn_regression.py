@@ -12,6 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+'''
+    Steps for supervised learning in a DNNRegressor Estimator
+    1) Import datasets
+    2) Scale datasets
+    3) Setup featuers to assign weights based on categories
+    4) Assign collumns to a dense list using one-hot encoding indicator_column
+        and embedding_column of hash based categories
+    5) Create a DNNRegressor model with feature collumns defined above
+        -Give hidden layers as desired
+    6) Evaluate and give the loss
+'''
+
 """Regression using the DNNRegressor Estimator."""
 
 from __future__ import absolute_import
