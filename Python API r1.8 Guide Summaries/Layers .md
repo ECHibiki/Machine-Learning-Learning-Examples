@@ -86,30 +86,37 @@ Helper functions to summarize specific variables or ops.
 * tf.contrib.layers.summarize_tensor(tensor,tag=None) // Scalar tensors produce a scalar_summary, for all others histogram_summary is produced
 * tf.contrib.layers.summarize_tensors(tensors,summarizer=tf.contrib.layers.summarize_tensor) //Summarize a set of tensors using above methods
 * tf.contrib.layers.summarize_collection(collection,name_filter=None,summarizer=tf.contrib.layers.summarize_tensor) //Summarize a graph collection of tensors, possibly filtered by name.
+
+
 The layers module defines convenience functions summarize_variables, summarize_weights and summarize_biases, which set the collection argument of summarize_collection to VARIABLES, WEIGHTS and BIASES, respectively.
-* tf.contrib.layers.summarize_activations //
+* tf.contrib.layers.summarize_activations(name_filter=None,summarizer=tf.contrib.layers.summarize_activation) // Uses summarize_activation  to sumarize activations
 Feature columns
 Feature columns provide a mechanism to map data to a model.
-* tf.contrib.layers.bucketized_column
-* tf.contrib.layers.check_feature_columns
-* tf.contrib.layers.create_feature_spec_for_parsing
-* tf.contrib.layers.crossed_column
-* tf.contrib.layers.embedding_column
-* tf.contrib.layers.scattered_embedding_column
-* tf.contrib.layers.input_from_feature_columns
-* tf.contrib.layers.joint_weighted_sum_from_feature_columns
-* tf.contrib.layers.make_place_holder_tensors_for_base_features
-* tf.contrib.layers.multi_class_target
-* tf.contrib.layers.one_hot_column
-* tf.contrib.layers.parse_feature_columns_from_examples
-* tf.contrib.layers.parse_feature_columns_from_sequence_examples
-* tf.contrib.layers.real_valued_column
-* tf.contrib.layers.shared_embedding_columns
-* tf.contrib.layers.sparse_column_with_hash_bucket
-* tf.contrib.layers.sparse_column_with_integerized_feature
-* tf.contrib.layers.sparse_column_with_keys
-* tf.contrib.layers.sparse_column_with_vocabulary_file
-* tf.contrib.layers.weighted_sparse_column
-* tf.contrib.layers.weighted_sum_from_feature_columns
-* tf.contrib.layers.infer_real_valued_columns
-* tf.contrib.layers.sequence_input_from_feature_columns
+* tf.contrib.layers.bucketized_column(source_column,boundaries) //BucketizedColumn for discretizing dense input. https://stats.stackexchange.com/questions/266996/what-do-dense-and-sparse-mean-in-the-context-of-neural-networks
+ Dense=='Sparse' and 'dense' refer to the number of zero vs. nonzero elements in an array (e.g. vector or matrix). A sparse array is one that contains mostly zeros, and few non-zero entries. A dense array contains mostly nonzeros. The usage of these terms in the context of neural nets is similar to their usage in other fields. There's no hard threshold for what counts as sparse; it's a loose term, but can be made more specific. For example, a vector is k-sparse if it contains at most k nonzero entries. Another way of saying this is that the vector's ℓ0 norm is k. Things that may be described as sparse or dense include the activations of units within a particular layer, the weights, and the data. One could also talk about 'sparse connectivity', which refers to the situation where only a small subset of units are connected to each other. This is a similar concept to sparse weights, because a connection with zero weight is effectively unconnected. 'Sparse array' can also refer to a class of data types that are efficient for representing arrays that are sparse. This is a concept within the domain of programming languages. It's related to, but distinct from the mathematical concept.
+* tf.contrib.layers.check_feature_columns(feature_columns) //Checks the validity of the set of FeatureColumns.
+* tf.contrib.layers.create_feature_spec_for_parsing(feature_columns) //prepares features config from input feature_columns. Returned can be used as an arg for features
+* tf.contrib.layers.crossed_column(columns,hash_bucket_size,combiner='sum',ckpt_to_load_from=None,tensor_name_in_ckpt=None,hash_key=None) // Creates crossed collum for feature crosses
+* tf.contrib.layers.embedding_column(sparse_id_column,dimension,combiner='mean',initializer=None,ckpt_to_load_from=None,tensor_name_in_ckpt=None,max_norm=None,trainable=True) 
+	// EmbeddingColum for sparse data in DNN
+* tf.contrib.layers.scattered_embedding_column(column_name,size,dimension,hash_key,combiner='mean',initializer=None) // Embedding collum for parameter hashing. Returns: _ScatteredEmbeddingColumn
+* tf.contrib.layers.input_from_feature_columns(columns_to_tensors,feature_columns,weight_collections=None,trainable=True,scope=None,cols_to_outs=None) // Builder for FeatureColumns
+* tf.contrib.layers.joint_weighted_sum_from_feature_columns(columns_to_tensors,feature_columns,num_outputs,weight_collections=None,trainable=True,scope=None) // Restricted linear prediction for featurecolumns. Computes prediction of linear model storing all weights into a single Var.
+* tf.contrib.layers.make_place_holder_tensors_for_base_features(feature_columns) //Returns placeholder tensors for inference.
+* tf.contrib.layers.multi_class_target(n_classes,label_name=None,weight_column_name=None) // THIS FUNCTION IS DEPRECATED
+* tf.contrib.layers.one_hot_column(sparse_id_column) //_OneHotColumn for a one-hot or multi-hot repr in a DNN.
+* tf.contrib.layers.parse_feature_columns_from_examples(serialized,feature_columns,name=None,example_names=None) // 
+* tf.contrib.layers.parse_feature_columns_from_sequence_examples(serialized,context_feature_columns,sequence_feature_columns,name=None,example_name=None) // Parses SequenceExamples to extract tensors for featurcolums
+* tf.contrib.layers.real_valued_column(column_name,dimension=1,default_value=None,dtype=tf.float32,normalizer=None) // Creates a _RealValuedColumn for dense numeric data.
+* tf.contrib.layers.shared_embedding_columns(sparse_id_columns,dimension,combiner='mean',shared_embedding_name=None,initializer=None,ckpt_to_load_from=None,tensor_name_in_ckpt=None,max_norm=None,trainable=True) //
+	//Creates a list of _EmbeddingColumn sharing the same embedding.
+* tf.contrib.layers.sparse_column_with_hash_bucket(column_name,hash_bucket_size,combiner='sum',dtype=tf.string,hash_keys=None) 
+	// Creates a _SparseColumn for hashed bucket configuration.  Use this when your sparse features are in string or integer format, but you don't have a vocab file that maps each value to an integer ID
+* tf.contrib.layers.sparse_column_with_integerized_feature(column_name,bucket_size,combiner='sum',dtype=tf.int64) // Creates an integerized _SparseColumn. For use when features are pre-integerized into int64
+* tf.contrib.layers.sparse_column_with_keys(column_name,keys,default_value=-1,combiner='sum',dtype=tf.string) // Creates a _SparseColumn with keys.
+* tf.contrib.layers.sparse_column_with_vocabulary_file (column_name,vocabulary_file,num_oov_buckets=0,vocab_size=None,default_value=-1,combiner='sum',dtype=tf.string) // Use this when your sparse features are in string or integer format, and you have a vocab file that maps each value to an integer ID. 
+* tf.contrib.layers.weighted_sparse_column(sparse_id_column,weight_column_name,dtype=tf.float32) 
+	// This configuration assumes that input dictionary of model contains the following two items: * (key="sparse_col", value=sparse_tensor) where sparse_tensor is a SparseTensor. * (key="weights_col", value=weights_tensor) where weights_tensor is a SparseTensor. Following are assumed to be true: * sparse_tensor.indices = weights_tensor.indices * sparse_tensor.dense_shape = weights_tensor.dense_shape
+* tf.contrib.layers.weighted_sum_from_feature_columns(columns_to_tensors,feature_columns,num_outputs,weight_collections=None,trainable=True,scope=None) // Linear prediction builder based on columsn. Function generates a weighted sum ofor each num_outputs.
+* tf.contrib.layers.infer_real_valued_columns(features) //
+* tf.contrib.layers.sequence_input_from_feature_columns(*args,**kwargs) //THIS FUNCTION IS EXPERIMENTAL. Builds inputs for sequence models from FeatureColumns. Returns A Tensor which can be consumed by hidden layers in the neural network.

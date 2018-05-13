@@ -17,7 +17,7 @@
     The steps of a supervised learning process using categorical feature_columns
     1) Import Dataset
     2) Scale Data as needed
-    3) Create a colum of linked vocabulary either by unique category weights or hased-random weights
+    3) Create a colum of linked vocabulary either by unique category weights or hased weights assigned to categories
     4) Assign your colums to a list
     5) Assign columns to model
     6) Train the model
